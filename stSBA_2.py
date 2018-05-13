@@ -80,6 +80,10 @@ city_tau_c = {'Запоріжжя': ('08:55    10:16    11:57    13:41    15:11 
                            '08:52    07:55')
               }
 
+n = smp.Symbol('n')
+s_E = []
+Ss_E = []
+
 def E_max(begin_r, dr):
     '''Визначає максимальну інтенсивність сонячної радіації для заданої широти
     
@@ -130,12 +134,13 @@ def generate_Imax_graph(city):
     
     E_1m = {i: int(round(E_m_1 + (E_m_7 - E_m_1) / (tau_c[7] - tau_c[1]) * (tau - tau_c[1]), 0)) 
            for i, tau in tau_c.items()}
-    print('Варіант 1: E_m_1 = {} Вт/м^2'.format(E_1m))
+    print('Варіант 1: I_max_1 = {} Вт/м^2'.format(E_1m))
     
     E_2m = {tau: int(round(E_m_1 + (E_m_7 - E_m_1) / (np.sin(np.pi/2) - np.sin(np.pi)) * 
                  (np.sin( (np.pi/2/(7-1)*np.abs(tau-1)) if tau < 8 else  (np.pi/2 - 
                  (np.pi-np.pi/2)/(13-7)*(tau-7))) - np.sin(np.pi)), 0)) for tau in m}
-    print('Варіант 2: E_m_2 = {} Вт/м^2'.format(E_2m))
+    print('Варіант 2: I_max_2 = {} Вт/м^2'.format(E_2m))
+    s_E.append((max(E_1m.values()), max(E_2m.values())))
     
     fig = plt.figure(**fig_data)
     ax = fig.add_subplot(111)
@@ -155,13 +160,13 @@ def generate_Imax_graph(city):
     # Кореляція.
     z = np.polyfit(x, y_1, 3)
     p = np.poly1d(z)
-    eq_1 = smp.S(r'{:.4f}*m**3 + {:.4f}*m**2 + {:.4f}*m + {:.4f}'.format(*z))
+    eq_1 = smp.S(r'{:.4f}*n**3 + {:.4f}*n**2 + {:.4f}*n + {:.4f}'.format(*z))
     
     y_2 = np.array(list(E_2m.values()))
     f = interp1d(x, y_2, kind='cubic')
     fy_2 = f(x_a)
     plt.plot(x_a, fy_2, ls='--', lw=2.5, c='k')#, label=r'$\mathrm{E_m}(\sin(\tau))$')
-    plt.plot(x, y_2, 'o', lw=2.5, c='k')
+    plt.plot(x, y_2, 'o', marker='^', lw=2.5, c='k')
     ax.annotate(r'2', xy=(x_a[-26], f(x_a[-26])), xycoords='data',
                                 xytext=(x_a[-21], f(x_a[-32])), textcoords='data', va='top', 
                                 ha='left', arrowprops=dict(arrowstyle='-'))
@@ -169,7 +174,12 @@ def generate_Imax_graph(city):
     # Кореляція.
     z = np.polyfit(x, y_2, 3)
     p = np.poly1d(z)
-    eq_2 = smp.S(r'{:.4f}*m**3 + {:.4f}*m**2 + {:.4f}*m + {:.4f}'.format(*z))
+    eq_2 = smp.S(r'{:.4f}*n**3 + {:.4f}*n**2 + {:.4f}*n + {:.4f}'.format(*z))
+    
+    S_E_1 = smp.integrate(eq_1, (n, 1, 12))
+    S_E_2 = smp.integrate(eq_2, (n, 1, 12))
+    Ss_E.append((S_E_1, S_E_2))
+    delta_E = (S_E_2 - S_E_1) / S_E_2 * 100
     
     y = np.r_[fy_1, fy_2]
     
@@ -188,7 +198,7 @@ def generate_Imax_graph(city):
     if y_max_delta:
         y_max = y_locator_base * (y_max_k+1)
     
-    ax.set_xlabel('Місяці, m', x=1, ha="right")
+    ax.set_xlabel('Місяці, n', x=1, ha="right")
     locator_x = ticker.MultipleLocator(base=x_locator_base)
     ax.xaxis.set_major_locator(locator_x)
     #plt.xticks(x, ['XII', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VII', 'IX', 'X', 
@@ -209,7 +219,9 @@ def generate_Imax_graph(city):
     ax.set_title(r'Зміна максимальної інтенсивності по місяцях, $\mathrm{I_{max}}$, '
                  r'$\mathrm{\frac{Вт}{м^2}}$' + r' для м. {} ($\varphi = {}^\circ$)'
                  .format(city, '{}'.format(phi).replace('.', '{,}')) + '\n' + 
-                 eq_sub_title, y=-0.215, fontsize=8)
+                 eq_sub_title + '\t' + r'$\delta_{{E}} = {:.1f}$%'
+                 .format(delta_E).replace('.', '{,}'), 
+                 y=-0.215, fontsize=8)
     ax.spines['top'].set_color(grid_color)
     ax.spines['right'].set_color(grid_color)
     ax.grid(color=grid_color)
@@ -225,6 +237,29 @@ def generate_Imax_graph(city):
 for city in cities:
     print(' Для міста {}: '.format(city).center(80, '='))
     generate_Imax_graph(city)
+
+sE_1 = [item[0] for item in s_E]
+sE_1_min = min(sE_1); sE_1_max = max(sE_1); Delta_E_1 = sE_1_max - sE_1_min
+sE_2 = [item[1] for item in s_E]
+sE_2_min = min(sE_2); sE_2_max = max(sE_2); Delta_E_2 = sE_2_max - sE_2_min
+print("Похибка для максимальних I_max для міст: Delta_I_max_1 = {0} Вт/м^2, "
+      "delta_I_max_1 = {1:.1f}%, Delta_I_max_2 = {2} Вт/м^2, delta_I_max_2 = {3:.1f}%"
+      .format(Delta_E_1, Delta_E_1 / sE_1_min * 100, 
+              Delta_E_2, Delta_E_2 / sE_2_min * 100) )
+print('Середнє значення I_max_сер_1 = {:.0f} Вт/м^2, I_max_сер_2 = {:.0f} Вт/м^2'
+      .format(sum(sE_1)/len(sE_1), sum(sE_2)/len(sE_2)))
+
+Ss_E_1 = [item[0] for item in Ss_E]
+Ss_E_1_min = min(Ss_E_1); Ss_E_1_max = max(Ss_E_1)
+
+Ss_E_2 = [item[1] for item in Ss_E]
+Ss_E_2_min = min(Ss_E_2); Ss_E_2_max = max(Ss_E_2)
+
+print("Похибка максимальної та мінімальної енергії, E, протягом року: "
+      "delta_E_1 = {:.1f}%, delta_E_2 = {:.1f}%".format(
+          (Ss_E_1_max - Ss_E_1_min) / Ss_E_1_min * 100,
+          (Ss_E_2_max - Ss_E_2_min) / Ss_E_2_min * 100
+      ))
 
 print(" Розв'язок завершено! ".center(50, '='))
 
