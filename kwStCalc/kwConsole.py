@@ -11,7 +11,8 @@ import re
 from PyQt5.QtCore import Qt, pyqtSlot
 from PyQt5.QtGui import QFont, QColor
 from PyQt5.QtWidgets import (QDialog, QVBoxLayout, QFormLayout, QDialogButtonBox, 
-                             QTextEdit, QAction, QCheckBox)
+                             QTextEdit, QAction, QCheckBox, QApplication, 
+                             QWidget, QPushButton, QLabel)
 
 from kwColor import KwColorChoicer
 from kwFont import KwFontDataChoicer
@@ -186,5 +187,4 @@ def __test(n, k=0):
         sys.exit(app.exec_())
 
 if __name__ == '__main__':
-    from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel
     __test(1, 1)

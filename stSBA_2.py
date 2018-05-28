@@ -45,9 +45,9 @@ m = np.arange(1, 13)
 
 wb = load_workbook(filename=r'C:\Users\ichet\OneDrive\Documents\DBNs\ДСТУ-Н Б В.1.1-27_2010.xlsx', 
                    read_only=True, data_only=True)
-ws = wb.get_sheet_by_name('Т10-Т17.Енергетична осв. пов.')
+ws = wb['Т10-Т17.Енергетична осв. пов.']
 
-ws_2 = wb.get_sheet_by_name('Лист2')
+ws_2 = wb['Лист2']
 cities = ('Запоріжжя', 'Київ', 'Львів', 'Одеса', 'Сімферополь', 'Харків',
           'Чернівці', 'Чернігів')
 city_phi = {r[0].value: round(int(r[1].value) + int(r[2].value)/60., 2) 

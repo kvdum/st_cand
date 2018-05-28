@@ -1,0 +1,57 @@
+QPushButton#calcButton {
+    padding-top: 3px;
+    padding-bottom: 3px;
+    color: rgb(255, 255, 255);
+    background: qlineargradient(x1:0, y1:1, x2:0, y2:0,
+                                stop:1 rgb(0, 215, 0),
+                                stop:0.4 rgb(0, 180, 0) );
+    border: 1px solid rgb(60, 135, 60);
+}
+
+QPushButton#calcButton:hover {
+    color: rgb(255, 255, 255);
+    background: qlineargradient(x1:0, y1:1, x2:0, y2:0,
+                                stop:1 rgb(0, 195, 0),
+                                stop:0.4 rgb(0, 160, 0) );
+    border: 1px solid rgb(60, 115, 60);
+}
+
+QPushButton#calcButton:pressed {
+    color: rgb(255, 255, 255);
+    background: qlineargradient(x1:0, y1:1, x2:0, y2:0,
+                                stop:1 rgb(0, 175, 0),
+                                stop:0.4 rgb(0, 140, 0) );
+    border: 1px solid rgb(60, 95, 60);
+}
+
+QPushButton#calcButton:focus {
+    color: rgb(255, 255, 255);
+    background: qlineargradient(x1:0, y1:1, x2:0, y2:0,
+                                stop:1 rgb(0, 215, 0),
+                                stop:0.4 rgb(0, 180, 0) );
+    border: 2px solid rgb(60, 135, 60);
+}
+
+QPushButton#calcButton:disabled {
+    color: rgb(230, 230, 230);
+    background: qlineargradient(x1:0, y1:1, x2:0, y2:0,
+                                stop:1 rgb(128, 215, 128),
+                                stop:0.4 rgb(128, 180, 128) );
+    border: 1px solid rgb(162, 135, 162);
+}
+
+QSplitter::handle:vertical {
+    background-color: rgba(128, 128, 128, 128);
+    image: url(splitter.png);
+}
+QSplitter::handle:vertical:pressed {
+    image: url(splitter_pressed.png);
+}
+
+QSplitter::handle:horizontal {
+    background-color: rgba(128, 128, 128, 128);
+    image: url(splitter_vertical.png);
+}
+QSplitter::handle:horizontal:pressed {
+    image: url(splitter_pressed_vertical.png);
+}

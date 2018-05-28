@@ -10,16 +10,12 @@ Created on 1.12.2017.
 '''
 
 import sys
-from PyQt5.QtCore import (Qt, QAbstractItemModel, QModelIndex, pyqtSignal, 
-                          QStringListModel)
-from PyQt5.QtGui import QFontMetrics, QFontDatabase, QFont
-from PyQt5.QtWidgets import (QApplication, QDialog, QListView, QRadioButton,
-    QComboBox, QLabel, QHBoxLayout, QGridLayout, QVBoxLayout, QDialogButtonBox,
-    QGroupBox, QFrame, QSizePolicy, QAbstractItemView,
-    QCheckBox, qApp, QPushButton, QFontDialog, QWidget,
+from PyQt5.QtCore import (Qt, pyqtSignal, QStringListModel)
+from PyQt5.QtGui import QFontMetrics, QFont
+from PyQt5.QtWidgets import (QApplication, QDialog, QListView, QLabel, 
+    QHBoxLayout, QGridLayout, QVBoxLayout, QDialogButtonBox, QGroupBox, QFrame, 
+    QAbstractItemView, QCheckBox, QPushButton, QFontDialog, QWidget,
     QFontComboBox, QSpinBox)
-
-#from kvFonts import free_font_path_generator
 
 STYLE_REGULAR = 0
 STYLE_BOLD = 1
@@ -28,15 +24,6 @@ STYLE_BOLD_ITALIC = 3
 STYLE_THIN = 4
 STYLE_LIGHT = 5
 STYLE_BLACK = 6
-
-#font_id = fontDatabase.addApplicationFont(
-#    r'C:\Users\ichet\Dropbox\MyApps\workspace4.6\kwWorkPrint\workGenerator\fonts\Hack\Hack-Regular.ttf')
-#for font_name in fonts_ttf:
-#    fontIds.append(fontDatabase.addApplicationFont(os.path.join(r'')))
-#fontDatabase.removeAllApplicationFonts()
-#fontIds = []
-#for font_fname in fonts_ttf:
-#    fontIds.append(fontDatabase.addApplicationFont(font_fname))
 
 class KwFontDataChoicer(QWidget):
     u'''
